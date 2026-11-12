@@ -21,11 +21,15 @@ Funziona anche aprendo `index.html` in locale con doppio clic, anche offline.
 
 ## Basette premi
 - Scheda **Basette**. I tipi sono tre:
-  - **Vincitore** e **Menzione**: 250 × 30 mm, su fondo oro, con la riga "Vincitore - Categoria" o "Menzione - Categoria".
-  - **Nomination**: 200 × 30 mm, su fondo trasparente, con la sola categoria.
-- Il PDF contiene **solo la grafica blu**: testi convertiti in tracciati e logo, su fondo trasparente e nel formato esatto della basetta. Il fondo oro o trasparente che vedi nell'anteprima serve solo come riferimento.
-- Import da CSV/Excel con le colonne `Nome`, `Categoria`, `Tipo` (modello: `modello-basette-cha2026.csv`). I file si chiamano "Nome - Tipo.pdf".
-- I nomi troppo lunghi si riducono per stare su una riga.
+  - **Vincitore** e **Menzione**: 250 × 30 mm, su fondo oro.
+  - **Nomination**: 200 × 30 mm, su fondo trasparente.
+- Le versioni grafiche sono due, entrambe attive (pagina Figma "Premi/basette", 522:2). Si sceglie con **Versione** e si possono mescolare nello stesso elenco:
+  - **Classica** (colonna sinistra del Figma): nome in alto a sinistra, sotto l'etichetta "VINCITORE" o "MENZIONE" con rombo e categoria, logo a destra. Nomination: nome e categoria (corpo 14), logo a destra.
+  - **Nuova** (colonna destra): logo a sinistra, rombo, nome centrato, rombo, poi "VINCITORE" o "MENZIONE SPECIALE" in grassetto con la categoria sotto. Il nome va su due righe bilanciate; con `|` scegli tu dove andare a capo (es. `Azienda|S.p.A.`). Nomination: come la Classica, con la categoria in corpo 13.
+- Il PDF contiene **solo la grafica blu**: testi convertiti in tracciati e logo, su fondo trasparente. La scritta dentro l'etichetta della Classica è scavata, quindi lascia vedere il fondo. Il fondo oro o trasparente dell'anteprima serve solo come riferimento.
+- Formato: le tavole Figma sono 709 × 85 px e 567 × 85 px; la pagina PDF è esattamente 250 × 30 mm o 200 × 30 mm e la grafica è scalata in proporzione.
+- Import da CSV/Excel con le colonne `Nome`, `Categoria`, `Tipo` e, facoltativa, `Versione` (Classica o Nuova; modello: `modello-basette-cha2026.csv`). I file si chiamano "Nome - Tipo.pdf", oppure "Nome - Tipo - Nuova.pdf" per la versione nuova.
+- I nomi troppo lunghi si riducono per stare nello spazio disponibile.
 
 Testi lunghi: vanno a capo (massimo 2 righe) e si riducono in automatico.
 
