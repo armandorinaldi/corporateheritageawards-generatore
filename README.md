@@ -22,7 +22,7 @@ Funziona anche aprendo `index.html` in locale con doppio clic, anche offline.
 ## Basette premi
 - Scheda **Basette**. I tipi sono tre:
   - **Vincitore** e **Menzione**: 25 × 3 cm, su fondo oro. Da sinistra: logo, tre rombi, nome centrato, tre rombi, etichetta "VINCITORE" o "MENZIONE SPECIALE" con la categoria in maiuscolo sotto.
-  - **Nomination**: 20 × 3 cm, su fondo trasparente. Nome e categoria a sinistra, logo a destra.
+  - **Nomination**: 20 × 3 cm, su fondo trasparente. Nome e categoria in maiuscolo a sinistra, logo a destra.
 - Il nome di Vincitore e Menzione va su due righe bilanciate; con `|` scegli tu dove andare a capo (es. `Azienda|S.p.A.`). I nomi lunghi si riducono per stare nello spazio, la categoria va a capo su massimo 2 righe.
 - Il PDF contiene **solo la grafica blu**: testi convertiti in tracciati e logo, su fondo trasparente. La scritta dentro l'etichetta è scavata, quindi lascia vedere il fondo. Il fondo oro o trasparente dell'anteprima serve solo come riferimento.
 - Formato: le tavole Figma sono 709 × 85 px e 567 × 85 px; la pagina PDF è esattamente 250 × 30 mm o 200 × 30 mm e la grafica è scalata in proporzione.
