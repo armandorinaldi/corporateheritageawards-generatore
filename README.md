@@ -12,7 +12,7 @@ Funziona anche aprendo `index.html` in locale con doppio clic, anche offline.
 ## Badge
 - **Badge singolo**: scegli il ruolo (GUEST, SPEAKER, PRESS, STAFF), compila Nome, Cognome e Azienda, poi *Scarica questo badge*. Il file si chiama "Nome Cognome.pdf".
 - **In serie**: importa un CSV o un file Excel con le colonne `Nome`, `Cognome`, `Azienda`, `Ruolo` (modello: `modello-badge-cha2026.csv`). Di default ottieni uno ZIP con un PDF per persona; gli omonimi diventano "Nome Cognome (2).pdf". In alternativa puoi scaricare un unico PDF con un badge per pagina.
-- **Badge vuoti**: senza nome né azienda. Scegli il ruolo e la quantità; puoi anche togliere la scritta del ruolo. Escono in un unico PDF.
+- **Badge vuoti**: lascia vuoti Nome, Cognome e Azienda e scarica. Esce il badge con la sola grafica e il ruolo. Puoi anche aggiungerlo all'elenco più volte.
 - **Formato**: con crocini la pagina è di 348,66 × 470,55 pt, come l'export di Figma. Senza crocini è di 331 × 453 pt, con l'abbondanza inclusa.
 
 ## Cavalieri

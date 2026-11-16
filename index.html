@@ -111,6 +111,7 @@ main[hidden]{display:none}
       <button class="btn secondary" id="one">Scarica questo badge</button>
       <button class="btn link" id="clear" style="margin-left:auto">Svuota campi</button>
     </div>
+    <p class="hint">Lascia i campi vuoti per ottenere un badge vuoto, con solo grafica e ruolo.</p>
   </div>
 
   <div class="card">
@@ -124,18 +125,6 @@ main[hidden]{display:none}
     <div class="row" style="margin-top:8px"><button class="btn link" id="tpl">Scarica il modello CSV</button></div>
   </div>
 
-  <div class="card">
-    <h2>Badge vuoti</h2>
-    <p class="hint" style="margin-top:0">Badge senza nome e azienda, per chi arriva all'ultimo momento o da compilare a mano. Usa il ruolo selezionato sopra.</p>
-    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
-      <div><label for="blank-n">Quantità</label><input type="number" id="blank-n" min="1" max="500" value="10" style="width:100px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;color:inherit"></div>
-      <label class="check" style="margin-bottom:10px"><input type="checkbox" id="blank-role" checked> Mantieni la scritta del ruolo</label>
-    </div>
-    <div class="row">
-      <button class="btn secondary" id="blank-preview">Mostra anteprima</button>
-      <button class="btn" id="blank-dl">Scarica badge vuoti</button>
-    </div>
-  </div>
 </section>
 
 <section>
@@ -809,21 +798,21 @@ let uid = 0;
 function badgeSVG(p, withMarks){
   const role = ROLES[p.ruolo] || ROLES.GUEST; const id = "c" + (++uid);
   const nameParts = [p.nome, p.cognome].map(s => (s || "").trim().toLocaleUpperCase("it-IT")).filter(Boolean);
-  const name = fit(nameParts.length ? nameParts : ["NOME", "COGNOME"], NAME);
+  const name = nameParts.length ? fit(nameParts, NAME) : { size: NAME.size, lines: [] }; // campi vuoti → badge vuoto
   const compTxt = (p.azienda || "").trim();
   const comp = compTxt ? fit([compTxt], COMP) : { size: COMP.size, lines: [] };
   const nLH = name.size * NAME.lh, cLH = comp.size * COMP.lh;
-  const blockH = name.lines.length * nLH + (comp.lines.length ? GAP + comp.lines.length * cLH : 0);
+  const blockH = name.lines.length * nLH + (comp.lines.length ? (name.lines.length ? GAP : 0) + comp.lines.length * cLH : 0);
   let y = BLOCK_CY - blockH / 2, txt = "";
-  if (!p.blank) for (const l of name.lines){ txt += `<text x="${CX}" y="${(y + baselineIn(nLH, name.size)).toFixed(2)}" font-family="Anton" font-size="${name.size}" fill="${NAVY}" text-anchor="middle">${esc(l)}</text>`; y += nLH; }
-  if (!p.blank && comp.lines.length){ y += GAP; for (const l of comp.lines){ txt += `<text x="${CX}" y="${(y + baselineIn(cLH, comp.size)).toFixed(2)}" font-family="Anton" font-size="${comp.size}" fill="${NAVY}" fill-opacity="0.5" text-anchor="middle">${esc(l)}</text>`; y += cLH; } }
+  for (const l of name.lines){ txt += `<text x="${CX}" y="${(y + baselineIn(nLH, name.size)).toFixed(2)}" font-family="Anton" font-size="${name.size}" fill="${NAVY}" text-anchor="middle">${esc(l)}</text>`; y += nLH; }
+  if (comp.lines.length){ if (name.lines.length) y += GAP; for (const l of comp.lines){ txt += `<text x="${CX}" y="${(y + baselineIn(cLH, comp.size)).toFixed(2)}" font-family="Anton" font-size="${comp.size}" fill="${NAVY}" fill-opacity="0.5" text-anchor="middle">${esc(l)}</text>`; y += cLH; } }
   const roleY = ROLE_TXT.cy - ROLE_TXT.size / 2 + baselineIn(ROLE_TXT.size, ROLE_TXT.size);
   const bands = BANDS.map(([acc, pts]) => `<polygon points="${pts}" fill="${acc ? role.accent : NAVY}"/>`).join("");
   const badge =
     `<defs><clipPath id="${id}"><rect x="0" y="0" width="${W}" height="${H}"/></clipPath></defs>` +
     `<g clip-path="url(#${id})"><rect x="0" y="0" width="${W}" height="${H}" fill="${BG}"/>${bands}</g>` +
     txt +
-    (p.noRole ? "" : `<text x="${ROLE_TXT.x}" y="${roleY.toFixed(2)}" font-family="Anton" font-size="${ROLE_TXT.size}" fill="${CREAM}">${esc(role.label)}</text>`) +
+    `<text x="${ROLE_TXT.x}" y="${roleY.toFixed(2)}" font-family="Anton" font-size="${ROLE_TXT.size}" fill="${CREAM}">${esc(role.label)}</text>` +
     `<g transform="translate(234.07 413.39)">${LOGO_FOOTER}</g>` +
     `<g transform="translate(15.34 15.34)">${LOGO_HEADER}</g>`;
   if (!withMarks) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${badge}</svg>`;
@@ -835,7 +824,7 @@ function badgeSVG(p, withMarks){
 async function makePDF(people, withMarks, onProgress){
   const pw = withMarks ? PAGE_W : W, ph = withMarks ? PAGE_H : H;
   const doc = new jsPDF({ unit: "pt", format: [pw, ph], orientation: "portrait", compress: true });
-  if (people.some(p => !(p.blank && p.noRole))) registerFont(doc); // no text at all → no font to embed
+  registerFont(doc);
   doc.setProperties({ title: "Badge CHA 2026", creator: "Generatore badge CHA 2026" });
   const parser = new DOMParser();
   for (let i = 0; i < people.length; i++){
@@ -870,7 +859,7 @@ function renderList(){
   const v = visible();
   $("count").textContent = `(${v.length}${filter !== "ALL" ? " di " + people.length : ""})`;
   $("list").innerHTML = v.length ? v.map(([p,i]) =>
-    `<tr data-i="${i}" class="${i===editing?"sel":""}"><td>${esc((p.nome+" "+p.cognome).trim())||"<em>—</em>"}</td><td>${esc(p.azienda||"")}</td>` +
+    `<tr data-i="${i}" class="${i===editing?"sel":""}"><td>${esc((p.nome+" "+p.cognome).trim())||"<em style=\"color:var(--muted)\">Badge vuoto</em>"}</td><td>${esc(p.azienda||"")}</td>` +
     `<td><span class="chip" style="background:${ROLES[p.ruolo].accent}">${p.ruolo}</span></td><td style="text-align:right"><button class="x" data-del="${i}" title="Elimina">×</button></td></tr>`).join("")
     : `<tr><td colspan="4" class="empty">Nessun partecipante. Aggiungine uno o importa un file.</td></tr>`;
   const counts = Object.keys(ROLES).map(k => [k, people.filter(p => p.ruolo === k).length]);
@@ -885,14 +874,14 @@ function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add(
 function download(blob, name){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
 function save(doc, name){ download(doc.output("blob"), name); }
 // "Mario Rossi.pdf" — keeps accents/spaces, strips characters not allowed in file names
-const fileName = p => `${(p.nome||"").trim()} ${(p.cognome||"").trim()}`.replace(/[\\/:*?"<>|\u0000-\u001f]+/g, "").replace(/\s+/g, " ").trim() || "badge";
+const fileName = p => `${(p.nome||"").trim()} ${(p.cognome||"").trim()}`.replace(/[\\/:*?"<>|\u0000-\u001f]+/g, "").replace(/\s+/g, " ").trim() || `Badge vuoto ${p.ruolo || "GUEST"}`;
 const slug = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase();
 
 /* ---------- Events ---------- */
 $("roles").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; role = b.dataset.r; renderRoles(); renderPreview(); });
 ["nome","cognome","azienda"].forEach(id => $(id).addEventListener("input", renderPreview));
 $("add").onclick = () => {
-  const p = current(); if (!p.nome.trim() && !p.cognome.trim()) { toast("Inserisci almeno nome o cognome"); return; }
+  const p = current(); // campi vuoti = badge vuoto
   p.nome = p.nome.trim(); p.cognome = p.cognome.trim(); p.azienda = p.azienda.trim();
   if (editing >= 0) { people[editing] = p; editing = -1; toast("Modifiche salvate"); } else { people.push(p); toast("Aggiunto all'elenco"); }
   setForm({ ruolo: role }); renderList(); $("nome").focus();
@@ -982,22 +971,6 @@ renderRoles();
 document.fonts.load('45px "Anton"').finally(() => { renderPreview(); });
 renderList();
 
-
-/* ---------- Badge vuoti ---------- */
-let blankPreview = false;
-const blankBadge = () => ({ nome: "", cognome: "", azienda: "", ruolo: role, blank: true, noRole: !$("blank-role").checked });
-const _renderPreview = renderPreview;
-renderPreview = function(){ if (blankPreview) { $("preview").innerHTML = badgeSVG(blankBadge(), false); } else _renderPreview(); };
-$("blank-preview").onclick = () => { blankPreview = !blankPreview; $("blank-preview").textContent = blankPreview ? "Torna al badge compilato" : "Mostra anteprima"; renderPreview(); };
-$("blank-role").onchange = () => renderPreview();
-["nome","cognome","azienda"].forEach(id => $(id).addEventListener("focus", () => { if (blankPreview) $("blank-preview").click(); }));
-$("blank-dl").onclick = async () => {
-  const n = Math.max(1, Math.min(500, parseInt($("blank-n").value, 10) || 1));
-  const btn = $("blank-dl"); btn.disabled = true;
-  try { save(await makePDF(Array.from({ length: n }, blankBadge), $("marks").checked), `badge-vuoti-${(blankBadge().noRole ? "senza-ruolo" : role.toLowerCase())}-${n}.pdf`); }
-  catch (err) { console.error(err); toast("Errore nella generazione del PDF"); }
-  finally { btn.disabled = false; }
-};
 
 /* =====================================================================
    CAVALIERI (table tents) — Figma node 352:72 "cavaliere A4"
