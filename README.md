@@ -12,6 +12,7 @@ Funziona anche aprendo `index.html` in locale con doppio clic, anche offline.
 ## Badge
 - **Badge singolo**: scegli il ruolo (GUEST, SPEAKER, PRESS, STAFF), compila Nome, Cognome e Azienda, poi *Scarica questo badge*. Il file si chiama "Nome Cognome.pdf".
 - **In serie**: importa un CSV o un file Excel con le colonne `Nome`, `Cognome`, `Azienda`, `Ruolo` (modello: `modello-badge-cha2026.csv`). Di default ottieni uno ZIP con un PDF per persona; gli omonimi diventano "Nome Cognome (2).pdf". In alternativa puoi scaricare un unico PDF con un badge per pagina.
+- **Badge vuoti**: senza nome né azienda. Scegli il ruolo e la quantità; puoi anche togliere la scritta del ruolo. Escono in un unico PDF.
 - **Formato**: con crocini la pagina è di 348,66 × 470,55 pt, come l'export di Figma. Senza crocini è di 331 × 453 pt, con l'abbondanza inclusa.
 
 ## Cavalieri
@@ -21,12 +22,11 @@ Funziona anche aprendo `index.html` in locale con doppio clic, anche offline.
 
 ## Basette premi
 - Scheda **Basette**. I tipi sono tre:
-  - **Vincitore** e **Menzione**: 25 × 3 cm, su fondo oro. Da sinistra: logo, tre rombi, nome centrato, tre rombi, etichetta "VINCITORE" o "MENZIONE SPECIALE" con la categoria in maiuscolo sotto.
-  - **Nomination**: 20 × 3 cm, su fondo trasparente. Nome e categoria in maiuscolo a sinistra, logo a destra.
-- Il nome di Vincitore e Menzione va su due righe bilanciate; con `|` scegli tu dove andare a capo (es. `Azienda|S.p.A.`). I nomi lunghi si riducono per stare nello spazio, la categoria va a capo su massimo 2 righe.
-- Il PDF contiene **solo la grafica blu**: testi convertiti in tracciati e logo, su fondo trasparente. La scritta dentro l'etichetta è scavata, quindi lascia vedere il fondo. Il fondo oro o trasparente dell'anteprima serve solo come riferimento.
-- Formato: le tavole Figma sono 709 × 85 px e 567 × 85 px; la pagina PDF è esattamente 250 × 30 mm o 200 × 30 mm e la grafica è scalata in proporzione.
+  - **Vincitore** e **Menzione**: 250 × 30 mm, su fondo oro, con la riga "Vincitore - Categoria" o "Menzione - Categoria".
+  - **Nomination**: 200 × 30 mm, su fondo trasparente, con la sola categoria.
+- Il PDF contiene **solo la grafica blu**: testi convertiti in tracciati e logo, su fondo trasparente e nel formato esatto della basetta. Il fondo oro o trasparente che vedi nell'anteprima serve solo come riferimento.
 - Import da CSV/Excel con le colonne `Nome`, `Categoria`, `Tipo` (modello: `modello-basette-cha2026.csv`). I file si chiamano "Nome - Tipo.pdf".
+- I nomi troppo lunghi si riducono per stare su una riga.
 
 Testi lunghi: vanno a capo (massimo 2 righe) e si riducono in automatico.
 
